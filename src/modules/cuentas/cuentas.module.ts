@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { CuentasController } from './controller/cuentas.controller';
-//import { CuentaSchema } from './cuentas.model';
 import { CuentasService } from './service/cuentas.service';
 import { CuentaSchema } from './entity/cuentas.entity';
 

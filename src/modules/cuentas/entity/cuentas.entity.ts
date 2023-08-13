@@ -10,7 +10,7 @@ export class Cuenta extends Document {
   monto_inicial: number;
 
   @Prop({ required: true })
-  id_acc_type: string;
+  tipo_de_cuenta: string;
 
   @Prop({ required: true })
   fecha_de_creacion: Date;

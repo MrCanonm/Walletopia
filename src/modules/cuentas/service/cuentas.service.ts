@@ -22,7 +22,7 @@ export class CuentasService {
       id: acc.id,
       acc_name: acc.acc_name,
       monto_inicial: acc.monto_inicial,
-      id_acc_type: acc.id_acc_type,
+      id_acc_type: acc.tipo_de_cuenta,
       fecha_de_cracion: acc.fecha_de_creacion,
       id_user: acc.id_user,
     }));
@@ -34,7 +34,7 @@ export class CuentasService {
       id: cuenta.id,
       acc_name: cuenta.acc_name,
       monto_inicial: cuenta.monto_inicial,
-      id_acc_type: cuenta.id_acc_type,
+      tipo_de_cuenta: cuenta.tipo_de_cuenta,
       fecha_de_cracion: cuenta.fecha_de_creacion,
       id_user: cuenta.id_user,
     };
@@ -44,7 +44,7 @@ export class CuentasService {
     cuentatId: string,
     acc_name: string,
     monto_inicial: number,
-    id_acc_type: string,
+    tipo_de_cuenta: string,
     fecha_de_cracion: Date,
     id_user: string,
   ) {
@@ -55,8 +55,8 @@ export class CuentasService {
     if (monto_inicial) {
       updatedCuenta.monto_inicial = monto_inicial;
     }
-    if (id_acc_type) {
-      updatedCuenta.id_acc_type = id_acc_type;
+    if (tipo_de_cuenta) {
+      updatedCuenta.tipo_de_cuenta = tipo_de_cuenta;
     }
     if (fecha_de_cracion) {
       updatedCuenta.fecha_de_creacion = fecha_de_cracion;

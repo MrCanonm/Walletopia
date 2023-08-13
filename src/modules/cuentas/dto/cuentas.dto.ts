@@ -6,7 +6,7 @@ export class CreateCuentaDTO {
   @ApiProperty()
   monto_inicial: number;
   @ApiProperty()
-  id_acc_type: string;
+  tipo_de_cuenta: string;
   @ApiProperty()
   fecha_de_creacion: Date;
   @ApiProperty()
