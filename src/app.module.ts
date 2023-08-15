@@ -5,9 +5,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CuentasModule } from './modules/cuentas/cuentas.module';
 import { GastosModule } from './modules/gastos/gastos.module';
+import { CategoriaModule } from './modules/categoria/categoria.module';
 
 @Module({
   imports: [
+    CategoriaModule,
     GastosModule,
     CuentasModule,
     MongooseModule.forRoot(
