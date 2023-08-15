@@ -32,9 +32,23 @@ export class CategoriaService {
     return categoria;
   }
   async deleteCategory(CatId: string) {
-    const reulst = await this.categoriaModel.deleteOne({ _id: CatId }).exec();
-    if (reulst.deletedCount === 0) {
-      throw new NotFoundException('No se encontre la Categoria');
+    const categoriaExistente = await this.categoriaModel.findById(CatId);
+
+    if (!categoriaExistente) {
+      throw new NotFoundException('No se encontró la Categoría');
+    }
+
+    // Valida si el category_id de la categoría es mayor a 9
+    if (categoriaExistente.category_id <= 9) {
+      throw new NotFoundException(
+        'No se permite eliminar las Categorias por defecto',
+      );
+    }
+
+    const result = await this.categoriaModel.deleteOne({ _id: CatId }).exec();
+
+    if (result.deletedCount === 0) {
+      throw new NotFoundException('No se encontró la Categoría');
     }
   }
 }
