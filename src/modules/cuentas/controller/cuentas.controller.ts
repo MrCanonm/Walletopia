@@ -13,8 +13,10 @@ import {
 import { CuentasService } from '../service/cuentas.service';
 import { CreateCuentaDTO } from '../dto/cuentas.dto';
 import { JwtAuthGuard } from 'src/modules/user/guard/jwt-auth.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('cuentas')
+@ApiBearerAuth() // Indica que la autenticación JWT es requerida
 @UseGuards(JwtAuthGuard)
 export class CuentasController {
   constructor(private readonly cuentasService: CuentasService) {}

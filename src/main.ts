@@ -9,6 +9,7 @@ async function bootstrap() {
     .setDescription('The Itopia API ')
     .setVersion('1.0')
     .addTag('Itopia')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

@@ -11,8 +11,10 @@ import {
 import { CategoriaService } from '../service/categoria.service';
 import { CategoriaDTO } from '../dto/categoria.dto';
 import { JwtAuthGuard } from 'src/modules/user/guard/jwt-auth.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('categoria')
+@ApiBearerAuth() // Indica que la autenticación JWT es requerida
 @UseGuards(JwtAuthGuard) // Aplica el guard de JWT en este controlador
 export class CategoriaController {
   constructor(private categoriaService: CategoriaService) {}

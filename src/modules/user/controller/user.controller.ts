@@ -3,8 +3,10 @@ import { UserService } from '../service/user.service';
 import { CreateUserDto } from '../dto/userCredential.dto';
 import { User } from '../entity/user.entity';
 import { UserCredentailDto } from '../dto/signin.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('users')
+@ApiBearerAuth() // Indica que la autenticación JWT es requerida
 export class UserController {
   constructor(readonly userService: UserService) {}
   @Post('signin')
