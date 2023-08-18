@@ -34,6 +34,11 @@ export class CategoriaController {
     const categoria = await this.categoriaService.getAllCategoria();
     return categoria;
   }
+  @Get('Icon')
+  async getAllIcon() {
+    const data = await this.categoriaService.getAllIcon();
+    return data;
+  }
   @Delete(':id')
   async removeCuenta(@Param('id') prodId: string) {
     await this.categoriaService.deleteCategory(prodId);

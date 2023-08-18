@@ -3,11 +3,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Categoria } from '../entity/categoria.entity';
 import { Model } from 'mongoose';
 import { CategoriaDTO } from '../dto/categoria.dto';
+import { Icons } from '../entity/icon.entity';
 
 @Injectable()
 export class CategoriaService {
   constructor(
     @InjectModel('Categoria') readonly categoriaModel: Model<Categoria>,
+    @InjectModel('Icons') readonly iconModel: Model<Icons>,
   ) {}
   async createCategoria(
     createCategoriaDTO: CategoriaDTO,
@@ -40,6 +42,10 @@ export class CategoriaService {
   async getAllCategoria() {
     const categoria = await this.categoriaModel.find().exec();
     return categoria;
+  }
+  async getAllIcon() {
+    const data = await this.iconModel.find().exec();
+    return data;
   }
   async deleteCategory(CatId: string) {
     const categoriaExistente = await this.categoriaModel.findById(CatId);
