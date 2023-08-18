@@ -13,7 +13,7 @@ import { JwtStrategy } from './service/JwtStrategy';
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
     JwtModule.register({
       secret: 'itopia',
-      signOptions: { expiresIn: '1h' },
+      signOptions: { expiresIn: '24h' },
     }),
   ],
   controllers: [UserController],
