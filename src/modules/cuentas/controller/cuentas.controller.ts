@@ -6,19 +6,27 @@ import {
   Param,
   Patch,
   Delete,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 
 import { CuentasService } from '../service/cuentas.service';
 import { CreateCuentaDTO } from '../dto/cuentas.dto';
+import { JwtAuthGuard } from 'src/modules/user/guard/jwt-auth.guard';
 
 @Controller('cuentas')
+@UseGuards(JwtAuthGuard)
 export class CuentasController {
   constructor(private readonly cuentasService: CuentasService) {}
 
   @Post()
-  async addCuenta(@Body() createCuentaDto: CreateCuentaDTO) {
-    const generatedId = await this.cuentasService.createCuenta(createCuentaDto);
-    return { id: generatedId };
+  async addCuenta(
+    @Body() createCuentaDto: CreateCuentaDTO,
+    @Request() req,
+  ): Promise<CreateCuentaDTO> {
+    const userId = req.user._id;
+    console.log(userId);
+    return this.cuentasService.createCuenta(createCuentaDto, userId);
   }
 
   @Get()
@@ -37,13 +45,8 @@ export class CuentasController {
     @Param('id') accID: string,
     @Body() updateCuentaDto: CreateCuentaDTO,
   ) {
-    const {
-      acc_name,
-      monto_inicial,
-      tipo_de_cuenta,
-      fecha_de_creacion,
-      id_user,
-    } = updateCuentaDto;
+    const { acc_name, monto_inicial, tipo_de_cuenta, fecha_de_creacion } =
+      updateCuentaDto;
 
     await this.cuentasService.updateCuenta(
       accID,
@@ -51,7 +54,6 @@ export class CuentasController {
       monto_inicial,
       tipo_de_cuenta,
       fecha_de_creacion,
-      id_user,
     );
     return null;
   }

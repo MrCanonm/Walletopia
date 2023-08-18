@@ -66,4 +66,14 @@ export class UserService {
     const payload = { sub: user._id };
     return this.jwtService.signAsync(payload);
   }
+
+  async validateUserById(userId: string): Promise<any> {
+    const user = await this.userModel.findById(userId);
+
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+
+    return user; // Retorna la información del usuario autenticado
+  }
 }

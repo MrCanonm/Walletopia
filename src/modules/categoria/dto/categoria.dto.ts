@@ -6,4 +6,5 @@ export class CategoriaDTO {
   @ApiProperty()
   icon_name: string;
   category_id: number;
+  createdBy: string;
 }

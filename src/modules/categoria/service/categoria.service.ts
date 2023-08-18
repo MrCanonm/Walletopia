@@ -9,22 +9,32 @@ export class CategoriaService {
   constructor(
     @InjectModel('Categoria') readonly categoriaModel: Model<Categoria>,
   ) {}
-  async createCategoria(createCategoriaDTO: CategoriaDTO): Promise<Categoria> {
-    //consultamos y actualizamos el contador para generar el ID autoincrementable
-    const contador = await this.categoriaModel
-      .findOneAndUpdate(
-        {},
-        { $inc: { category_id: 1 } },
-        { new: true, upsert: true },
-      )
-      .select('category_id');
-    //creamos una nueva instancia del modelo de la categoría y asignamos el ID generado
-    const categoria = new this.categoriaModel({
-      ...createCategoriaDTO,
-      category_id: contador.category_id,
+  async createCategoria(
+    createCategoriaDTO: CategoriaDTO,
+    createdBy: string,
+  ): Promise<Categoria> {
+    let categoria: Categoria;
+    await this.categoriaModel.db.transaction(async (session) => {
+      // Consulta y actualiza el contador en la misma transacción
+      const contador = await this.categoriaModel
+        .findOneAndUpdate(
+          {},
+          { $inc: { category_id: 1 } },
+          { new: true, upsert: true, session },
+        )
+        .select('category_id');
+
+      // Crea una nueva instancia del modelo de la categoría y asigna el ID generado
+      categoria = new this.categoriaModel({
+        ...createCategoriaDTO,
+        createdBy: createdBy,
+        category_id: contador.category_id,
+      });
+
+      await categoria.save({ session }); // Guarda la categoría en la misma transacción
     });
 
-    return categoria.save();
+    return categoria;
   }
 
   async getAllCategoria() {

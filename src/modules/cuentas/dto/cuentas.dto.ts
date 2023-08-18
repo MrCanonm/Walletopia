@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional, IsString } from 'class-validator';
 
 export class CreateCuentaDTO {
   @ApiProperty()
@@ -9,6 +10,7 @@ export class CreateCuentaDTO {
   tipo_de_cuenta: string;
   @ApiProperty()
   fecha_de_creacion: Date;
-  @ApiProperty()
-  id_user: string;
+  @IsOptional()
+  @IsString()
+  user_id: string;
 }

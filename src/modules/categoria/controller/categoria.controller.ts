@@ -1,16 +1,30 @@
-import { Body, Controller, Get, Post, Param, Delete } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Param,
+  Delete,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { CategoriaService } from '../service/categoria.service';
 import { CategoriaDTO } from '../dto/categoria.dto';
+import { JwtAuthGuard } from 'src/modules/user/guard/jwt-auth.guard';
 
 @Controller('categoria')
+@UseGuards(JwtAuthGuard) // Aplica el guard de JWT en este controlador
 export class CategoriaController {
   constructor(private categoriaService: CategoriaService) {}
 
   @Post()
   async addCategory(
     @Body() createCategoriaDTO: CategoriaDTO,
+    @Request() req,
   ): Promise<CategoriaDTO> {
-    return this.categoriaService.createCategoria(createCategoriaDTO);
+    const userId = req.user._id;
+    console.log(userId);
+    return this.categoriaService.createCategoria(createCategoriaDTO, userId);
   }
 
   @Get()
