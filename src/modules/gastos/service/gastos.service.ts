@@ -13,7 +13,7 @@ export class GastosService {
     @InjectModel('Cuenta') readonly cuentaModel: Model<Cuenta>,
     @InjectModel('Categoria') readonly categoriaModel: Model<Categoria>,
   ) {}
-  async createGastos(createGastos: GastosDTO): Promise<string> {
+  async createGastos(createGastos: GastosDTO, userId: string): Promise<string> {
     //Validar si la cuenta existe by id
     const cuenta = await this.cuentaModel
       .findById(createGastos.id_cuentas)
@@ -32,20 +32,14 @@ export class GastosService {
     }
     //Si la cuenta y la categoria existen, se creara el gasto
     const newGastos = new this.gastosModel(createGastos);
+    newGastos.id_cuentas = userId;
     const result = await newGastos.save();
     return result.id as string;
   }
 
-  async getGastos() {
-    const gastos = await this.gastosModel.find().exec();
-    return gastos.map((acc) => ({
-      id: acc.id,
-      id_cuentas: acc.id_cuentas,
-      tipo_gastos: acc.tipo_gastos,
-      id_categoria: acc.id_categoria,
-      concepto: acc.concepto,
-      monto: acc.monto,
-      fecha_de_creacion: acc.fecha_de_creacion,
-    }));
+  async getGastos(req) {
+    const cuentaID = req.user._id;
+    const gastos = await this.gastosModel.find({ id_cuentas: cuentaID }).exec();
+    return gastos;
   }
 }
