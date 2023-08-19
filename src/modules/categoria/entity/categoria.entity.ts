@@ -8,7 +8,7 @@ export class Categoria extends Document {
   @Prop({ require: true })
   icon_name: string;
   @Prop()
-  category_id: number;
+  isDefault: boolean;
   @Prop({ type: Types.ObjectId, ref: 'User' }) // Crea una referencia al usuario que crea la categoría
   createdBy: string;
 }

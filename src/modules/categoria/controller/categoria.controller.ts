@@ -7,6 +7,8 @@ import {
   Delete,
   Request,
   UseGuards,
+  Req,
+  Res,
 } from '@nestjs/common';
 import { CategoriaService } from '../service/categoria.service';
 import { CategoriaDTO } from '../dto/categoria.dto';
@@ -30,9 +32,15 @@ export class CategoriaController {
   }
 
   @Get()
-  async getCategory() {
-    const categoria = await this.categoriaService.getAllCategoria();
-    return categoria;
+  async getCategory(@Req() req, @Res() res) {
+    const userId = req.user._id; // Suponiendo que puedes acceder al ID del usuario desde el request (por ejemplo, si estás usando autenticación)
+
+    try {
+      const categorias = await this.categoriaService.getCategoria(userId);
+      res.status(200).json(categorias);
+    } catch (error) {
+      res.status(500).json({ error: 'Error al obtener las categorías.' });
+    }
   }
   @Get('Icon')
   async getAllIcon() {
