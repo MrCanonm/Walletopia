@@ -10,7 +10,7 @@ export class UserController {
   @Post('signin')
   async signIn(
     @Body() signInDto: UserCredentailDto,
-  ): Promise<{ accessToken: string }> {
+  ): Promise<{ acces_token: string }> {
     return this.userService.signIn(signInDto);
   }
   @Post('createUser')

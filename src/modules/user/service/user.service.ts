@@ -44,7 +44,7 @@ export class UserService {
     await newUser.save();
     return newUser;
   }
-  async signIn(signInDto: UserCredentailDto): Promise<{ accessToken: string }> {
+  async signIn(signInDto: UserCredentailDto): Promise<{ acces_token: string }> {
     const user = await this.userModel.findOne({ mail: signInDto.mail });
 
     if (!user) {
@@ -60,8 +60,8 @@ export class UserService {
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
-    const accessToken = await this.generateAccessToken(user);
-    return { accessToken };
+    const acces_token = await this.generateAccessToken(user);
+    return { acces_token };
   }
 
   private async generateAccessToken(user: User): Promise<string> {
