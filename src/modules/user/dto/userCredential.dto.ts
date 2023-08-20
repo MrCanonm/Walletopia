@@ -5,7 +5,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   @ApiProperty()
-  correo: string;
+  mail: string;
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
@@ -13,5 +13,5 @@ export class CreateUserDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  name: string;
+  full_name: string;
 }

@@ -21,16 +21,14 @@ export class CuentasService {
     });
     return newCuenta.save();
   }
-  async getCuenta() {
-    const cuentas = await this.cuentasModel.find().exec();
-    return cuentas.map((acc) => ({
-      id: acc.id,
-      acc_name: acc.acc_name,
-      monto_inicial: acc.monto_inicial,
-      id_acc_type: acc.tipo_de_cuenta,
-      fecha_de_cracion: acc.fecha_de_creacion,
-      user_id: acc.user_id,
-    }));
+  async getCuenta(userId: string) {
+    const cuenta = await this.cuentasModel.find({ user_id: userId }).exec();
+    if (!cuenta || cuenta.length === 0) {
+      throw new NotFoundException(
+        'No se encontraron cuentas para este usuario.',
+      );
+    }
+    return cuenta;
   }
 
   async getSingleCuenta(cuentaId: string) {
@@ -40,7 +38,7 @@ export class CuentasService {
       acc_name: cuenta.acc_name,
       monto_inicial: cuenta.monto_inicial,
       tipo_de_cuenta: cuenta.tipo_de_cuenta,
-      fecha_de_cracion: cuenta.fecha_de_creacion,
+      fecha_de_creacion: cuenta.fecha_de_creacion,
       user_id: cuenta.user_id,
     };
   }
@@ -50,7 +48,7 @@ export class CuentasService {
     acc_name: string,
     monto_inicial: number,
     tipo_de_cuenta: string,
-    fecha_de_cracion: Date,
+    fecha_de_creacion: Date,
   ) {
     const updatedCuenta = await this.findCuenta(cuentatId);
     if (acc_name) {
@@ -62,8 +60,8 @@ export class CuentasService {
     if (tipo_de_cuenta) {
       updatedCuenta.tipo_de_cuenta = tipo_de_cuenta;
     }
-    if (fecha_de_cracion) {
-      updatedCuenta.fecha_de_creacion = fecha_de_cracion;
+    if (fecha_de_creacion) {
+      updatedCuenta.fecha_de_creacion = fecha_de_creacion;
     }
     updatedCuenta.save();
   }
@@ -80,10 +78,10 @@ export class CuentasService {
     try {
       cuenta = await this.cuentasModel.findById(id).exec();
     } catch (error) {
-      throw new NotFoundException('Could not find the Accc.');
+      throw new NotFoundException('No se ha encontrado la cuenta');
     }
     if (!cuenta) {
-      throw new NotFoundException('Could not find the Accc.');
+      throw new NotFoundException('No se ha encontrado la cuenta');
     }
     return cuenta;
   }

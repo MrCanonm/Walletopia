@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Request,
+  Req,
 } from '@nestjs/common';
 
 import { CuentasService } from '../service/cuentas.service';
@@ -32,8 +33,9 @@ export class CuentasController {
   }
 
   @Get()
-  async getAllCuentas() {
-    const cuentas = await this.cuentasService.getCuenta();
+  async getAllCuentas(@Req() req) {
+    const userId = req.user._id;
+    const cuentas = await this.cuentasService.getCuenta(userId);
     return cuentas;
   }
 

@@ -5,7 +5,7 @@ export class UserCredentailDto {
   @IsNotEmpty()
   @IsString()
   @ApiProperty()
-  correo: string;
+  mail: string;
   @IsNotEmpty()
   @IsString()
   @ApiProperty()

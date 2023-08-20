@@ -21,18 +21,21 @@ export class UserService {
   ) {}
   async createUser(data: CreateUserDto): Promise<User> {
     // Verificar si el usuario ya existe por su correo electrónico
-    const existingUser = await this.userModel.findOne({ correo: data.correo });
+    const existingUser = await this.userModel.findOne({ mail: data.mail });
     if (existingUser) {
       throw new ConflictException('El usuario ya existe');
     }
 
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(data.password, salt);
+    let hashedPassword: string | undefined;
+    if (data.password) {
+      const salt = await bcrypt.genSalt();
+      hashedPassword = await bcrypt.hash(data.password, salt);
+    }
 
     const newUser = new this.userModel({
-      correo: data.correo,
+      mail: data.mail,
       password: hashedPassword,
-      name: data.name,
+      full_name: data.full_name,
     });
 
     const accessToken = await this.generateAccessToken(newUser);
@@ -42,7 +45,7 @@ export class UserService {
     return newUser;
   }
   async signIn(signInDto: UserCredentailDto): Promise<{ accessToken: string }> {
-    const user = await this.userModel.findOne({ correo: signInDto.correo });
+    const user = await this.userModel.findOne({ mail: signInDto.mail });
 
     if (!user) {
       throw new NotFoundException('Usuario no encontrado');
