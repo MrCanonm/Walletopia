@@ -14,8 +14,4 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   name: string;
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  tipo_de_login: string;
 }

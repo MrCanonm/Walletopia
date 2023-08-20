@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Get,
-  Req,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Post, Body, Get, Req, UseGuards } from '@nestjs/common';
 import { GastosService } from '../service/gastos.service';
 import { GastosDTO } from '../dto/gastos.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';

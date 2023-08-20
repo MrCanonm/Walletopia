@@ -9,8 +9,6 @@ export class User extends Document {
   password: string;
   @Prop({ required: true })
   name: string;
-  @Prop({ required: true })
-  tipo_de_login: string;
   @Prop()
   acces_token: string;
 }

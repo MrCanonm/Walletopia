@@ -33,7 +33,6 @@ export class UserService {
       correo: data.correo,
       password: hashedPassword,
       name: data.name,
-      tipo_de_login: data.tipo_de_login,
     });
 
     const accessToken = await this.generateAccessToken(newUser);
