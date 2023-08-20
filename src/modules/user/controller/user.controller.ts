@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get, Req, Request, Res } from '@nestjs/common';
 import { UserService } from '../service/user.service';
 import { CreateUserDto } from '../dto/userCredential.dto';
 import { User } from '../entity/user.entity';
@@ -18,5 +18,15 @@ export class UserController {
   @Post('createUser')
   async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.userService.createUser(createUserDto);
+  }
+
+  @Get('/logout')
+  async logout(@Req() req, @Res() res) {
+    req.session.destroy((err) => {
+      if (err) {
+        console.error('Error al destruir la sesión:', err);
+      }
+      return res.json({ msg: 'Sesión cerrada exitosamente.' });
+    });
   }
 }
