@@ -49,15 +49,13 @@ export class CuentasController {
     @Param('id') accID: string,
     @Body() updateCuentaDto: CreateCuentaDTO,
   ) {
-    const { acc_name, monto_inicial, tipo_de_cuenta, fecha_de_creacion } =
-      updateCuentaDto;
+    const { acc_name, monto_inicial, tipo_de_cuenta } = updateCuentaDto;
 
     await this.cuentasService.updateCuenta(
       accID,
       acc_name,
       monto_inicial,
       tipo_de_cuenta,
-      fecha_de_creacion,
     );
     return null;
   }

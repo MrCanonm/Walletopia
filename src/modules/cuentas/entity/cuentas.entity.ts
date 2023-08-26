@@ -13,7 +13,7 @@ export class Cuenta extends Document {
   tipo_de_cuenta: string;
 
   @Prop({ required: true })
-  fecha_de_creacion: Date;
+  fecha_de_creacion: string;
 
   @Prop({ type: Types.ObjectId, ref: 'User' })
   user_id: string;

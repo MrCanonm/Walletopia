@@ -9,7 +9,7 @@ export class CreateCuentaDTO {
   @ApiProperty()
   tipo_de_cuenta: string;
   @ApiProperty()
-  fecha_de_creacion: Date;
+  fecha_de_creacion: string;
   @IsOptional()
   @IsString()
   user_id: string;

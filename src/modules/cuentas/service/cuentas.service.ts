@@ -48,7 +48,6 @@ export class CuentasService {
     acc_name: string,
     monto_inicial: number,
     tipo_de_cuenta: string,
-    fecha_de_creacion: Date,
   ) {
     const updatedCuenta = await this.findCuenta(cuentatId);
     if (acc_name) {
@@ -59,9 +58,6 @@ export class CuentasService {
     }
     if (tipo_de_cuenta) {
       updatedCuenta.tipo_de_cuenta = tipo_de_cuenta;
-    }
-    if (fecha_de_creacion) {
-      updatedCuenta.fecha_de_creacion = fecha_de_creacion;
     }
     updatedCuenta.save();
   }

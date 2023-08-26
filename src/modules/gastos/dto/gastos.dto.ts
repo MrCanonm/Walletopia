@@ -12,5 +12,5 @@ export class GastosDTO {
   @ApiProperty()
   monto: number;
   @ApiProperty()
-  fecha_de_creacion: Date;
+  fecha_de_creacion: string;
 }
