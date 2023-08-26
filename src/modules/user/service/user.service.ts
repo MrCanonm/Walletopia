@@ -20,6 +20,7 @@ export class UserService {
     readonly jwtService: JwtService,
   ) {}
   async createUser(data: CreateUserDto): Promise<User> {
+    data.mail = data.mail.toLowerCase();
     // Verificar si el usuario ya existe por su correo electrónico
     const existingUser = await this.userModel.findOne({ mail: data.mail });
     if (existingUser) {
@@ -45,6 +46,7 @@ export class UserService {
     return newUser;
   }
   async signIn(signInDto: UserCredentailDto): Promise<{ acces_token: string }> {
+    signInDto.mail = signInDto.mail.toLowerCase();
     const user = await this.userModel.findOne({ mail: signInDto.mail });
 
     if (!user) {
