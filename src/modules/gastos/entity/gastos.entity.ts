@@ -14,7 +14,7 @@ export class Gastos extends Document {
   @Prop({ required: true })
   monto: number;
   @Prop({ required: true })
-  fecha_de_creacion: Date;
+  fecha_de_creacion: string;
 }
 
 export const GastosSchema = SchemaFactory.createForClass(Gastos);
