@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Gastos } from '../entity/gastos.entity';
@@ -13,13 +13,13 @@ export class GastosService {
     @InjectModel('Cuenta') readonly cuentaModel: Model<Cuenta>,
     @InjectModel('Categoria') readonly categoriaModel: Model<Categoria>,
   ) {}
-  async createGastos(createGastos: GastosDTO, userId: string): Promise<string> {
+  async createGastos(createGastos: GastosDTO): Promise<string> {
     //Validar si la cuenta existe by id
     const cuenta = await this.cuentaModel
-      .findById(createGastos.id_cuentas)
+      .findById(createGastos.id_cuenta)
       .exec();
     if (!cuenta) {
-      throw new Error(`La cuenta con id ${createGastos.id_cuentas} no existe.`);
+      throw new Error(`La cuenta con id ${createGastos.id_cuenta} no existe.`);
     }
     //Validar si la categoria existe by id
     const categoria = await this.categoriaModel
@@ -27,19 +27,71 @@ export class GastosService {
       .exec();
     if (!categoria) {
       throw new Error(
-        `La Categoria con id ${createGastos.id_cuentas} no existe.`,
+        `La Categoria con id ${createGastos.id_cuenta} no existe.`,
       );
     }
     //Si la cuenta y la categoria existen, se creara el gasto
     const newGastos = new this.gastosModel(createGastos);
-    newGastos.id_cuentas = userId;
     const result = await newGastos.save();
     return result.id as string;
   }
 
   async getGastos(req) {
-    const cuentaID = req.user._id;
-    const gastos = await this.gastosModel.find({ id_cuentas: cuentaID }).exec();
+    const userId = req.user._id;
+
+    // Obtener todas las cuentas asociadas al usuario
+    const cuentasDelUsuario = await this.cuentaModel
+      .find({ user_id: userId })
+      .exec();
+
+    const cuentasIds = cuentasDelUsuario.map((cuenta) => cuenta._id);
+
+    // Obtener los gastos asociados a las cuentas del usuario
+    const gastos = await this.gastosModel
+      .find({ id_cuenta: { $in: cuentasIds } })
+      .exec();
+
     return gastos;
+  }
+
+  async getGastosById(cuentaId: string) {
+    const gastos = await this.gastosModel.find({ id_cuenta: cuentaId }).exec();
+
+    if (gastos.length === 0) {
+      throw new Error('No hay gastos en esta cuenta');
+    }
+
+    return gastos;
+  }
+  async updateGastos(
+    gastosId: string,
+    tipo_gastos: string,
+    id_categoria: string,
+    concepto: string,
+    monto: number,
+  ) {
+    const updateGastos = await this.gastosModel.findById(gastosId).exec();
+    if (!updateGastos) {
+      throw new NotFoundException('El gasto no existe.');
+    }
+    if (tipo_gastos) {
+      updateGastos.tipo_gastos = tipo_gastos;
+    }
+    if (id_categoria) {
+      updateGastos.id_categoria = id_categoria;
+    }
+    if (concepto) {
+      updateGastos.concepto = concepto;
+    }
+    if (monto) {
+      updateGastos.monto = monto;
+    }
+    await updateGastos.save();
+  }
+  async deleteGastos(idGastos: string) {
+    const gastos = await this.gastosModel.deleteOne({ _id: idGastos });
+    if (gastos.deletedCount === 0) {
+      throw new NotFoundException('No se encontro el gasto a eliminar!');
+    }
   }
 }

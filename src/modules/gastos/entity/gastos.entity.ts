@@ -4,7 +4,7 @@ import { Document } from 'mongoose';
 @Schema()
 export class Gastos extends Document {
   @Prop({ required: true })
-  id_cuentas: string;
+  id_cuenta: string;
   @Prop({ required: true })
   tipo_gastos: string;
   @Prop({ required: true })
