@@ -31,7 +31,7 @@ export class GastosController {
     const gastos = await this.gastosSerivce.getGastos(req);
     return gastos;
   }
-  @Get('cuenta/:cuentaId')
+  @Get(':cuentaId')
   async getGastosByCuentaId(
     @Param('cuentaId') cuentaId: string,
   ): Promise<Gastos[]> {
