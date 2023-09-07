@@ -6,7 +6,7 @@ export class Gastos extends Document {
   @Prop({ required: true })
   id_cuenta: string;
   @Prop({ required: true })
-  tipo_gastos: string;
+  tipo_gasto: number;
   @Prop({ required: true })
   id_categoria: string;
   @Prop({ required: true })

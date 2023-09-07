@@ -43,11 +43,11 @@ export class GastosController {
     @Param('id') gastosID: string,
     @Body() updateGastosDto: GastosDTO,
   ) {
-    const { tipo_gastos, id_categoria, concepto, monto } = updateGastosDto;
+    const { tipo_gasto, id_categoria, concepto, monto } = updateGastosDto;
 
     await this.gastosSerivce.updateGastos(
       gastosID,
-      tipo_gastos,
+      tipo_gasto,
       id_categoria,
       concepto,
       monto,

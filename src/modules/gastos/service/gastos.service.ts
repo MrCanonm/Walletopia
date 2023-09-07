@@ -31,7 +31,7 @@ export class GastosService {
       );
     }
     // Determinar si el gasto es débito o crédito
-    const isDebito = createGastos.tipo_gastos === 'Debito';
+    const isDebito = createGastos.tipo_gasto === 0;
 
     // Calcular el nuevo monto corriente de la cuenta
     const nuevoMonto = isDebito
@@ -42,7 +42,6 @@ export class GastosService {
     cuenta.monto_corriente = nuevoMonto;
 
     // Guardar la cuenta actualizada
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const cuentaActualizada = await cuenta.save();
 
     // Crear el nuevo gasto
@@ -80,7 +79,7 @@ export class GastosService {
   }
   async updateGastos(
     gastosId: string,
-    tipo_gastos: string,
+    tipo_gastos: number,
     id_categoria: string,
     concepto: string,
     monto: number,
@@ -90,7 +89,7 @@ export class GastosService {
       throw new NotFoundException('El gasto no existe.');
     }
     if (tipo_gastos) {
-      updateGastos.tipo_gastos = tipo_gastos;
+      updateGastos.tipo_gasto = tipo_gastos;
     }
     if (id_categoria) {
       updateGastos.id_categoria = id_categoria;
