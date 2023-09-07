@@ -30,7 +30,22 @@ export class GastosService {
         `La Categoria con id ${createGastos.id_cuenta} no existe.`,
       );
     }
-    //Si la cuenta y la categoria existen, se creara el gasto
+    // Determinar si el gasto es débito o crédito
+    const isDebito = createGastos.tipo_gastos === 'Debito';
+
+    // Calcular el nuevo monto corriente de la cuenta
+    const nuevoMonto = isDebito
+      ? cuenta.monto_corriente - createGastos.monto
+      : cuenta.monto_corriente + createGastos.monto;
+
+    // Actualizar el monto corriente de la cuenta
+    cuenta.monto_corriente = nuevoMonto;
+
+    // Guardar la cuenta actualizada
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const cuentaActualizada = await cuenta.save();
+
+    // Crear el nuevo gasto
     const newGastos = new this.gastosModel(createGastos);
     const result = await newGastos.save();
     return result.id as string;

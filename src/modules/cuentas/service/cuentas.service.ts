@@ -18,6 +18,7 @@ export class CuentasService {
     createCuentaDto: CreateCuentaDTO,
     user_id: string,
   ): Promise<Cuenta> {
+    createCuentaDto.monto_corriente = createCuentaDto.monto_inicial;
     const newCuenta = new this.cuentasModel({
       ...createCuentaDto,
       user_id: user_id,

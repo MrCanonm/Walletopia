@@ -6,6 +6,7 @@ export class CreateCuentaDTO {
   acc_name: string;
   @ApiProperty()
   monto_inicial: number;
+  monto_corriente: number;
   @ApiProperty()
   tipo_de_cuenta: string;
   @ApiProperty()
