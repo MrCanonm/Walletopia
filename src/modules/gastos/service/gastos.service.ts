@@ -103,9 +103,28 @@ export class GastosService {
     await updateGastos.save();
   }
   async deleteGastos(idGastos: string) {
-    const gastos = await this.gastosModel.deleteOne({ _id: idGastos });
-    if (gastos.deletedCount === 0) {
-      throw new NotFoundException('No se encontro el gasto a eliminar!');
+    // Obtén la información del gasto antes de eliminarlo
+    const gasto = await this.gastosModel.findById(idGastos);
+    const cuenta = await this.cuentaModel.findById(gasto.id_cuenta);
+    if (!gasto) {
+      throw new NotFoundException('No se encontró el gasto a eliminar');
+    }
+    const isDebito = gasto.tipo_gasto === 0;
+    // Calcular el nuevo monto corriente de la cuenta
+    const nuevoMonto = isDebito
+      ? cuenta.monto_corriente + gasto.monto
+      : cuenta.monto_corriente - gasto.monto;
+    // Actualizar el monto corriente de la cuenta
+    cuenta.monto_corriente = nuevoMonto;
+    // Guardar la cuenta actualizada
+    await cuenta.save();
+    // Elimina el gasto
+    const resultadoEliminacion = await this.gastosModel.deleteOne({
+      _id: idGastos,
+    });
+
+    if (resultadoEliminacion.deletedCount === 0) {
+      throw new NotFoundException('No se encontró el gasto a eliminar');
     }
   }
 }
