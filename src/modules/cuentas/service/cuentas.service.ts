@@ -3,18 +3,22 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Cuenta } from '../entity/cuentas.entity';
 import { CreateCuentaDTO } from '../dto/cuentas.dto';
+import { Gastos } from 'src/modules/gastos/entity/gastos.entity';
 
 @Injectable()
 export class CuentasService {
   constructor(
     @InjectModel('Cuenta')
     private readonly cuentasModel: Model<Cuenta>,
+    @InjectModel('Gastos')
+    private readonly gastosModel: Model<Gastos>,
   ) {}
 
   async createCuenta(
     createCuentaDto: CreateCuentaDTO,
     user_id: string,
   ): Promise<Cuenta> {
+    createCuentaDto.monto_corriente = createCuentaDto.monto_inicial;
     const newCuenta = new this.cuentasModel({
       ...createCuentaDto,
       user_id: user_id,
@@ -66,6 +70,8 @@ export class CuentasService {
     const result = await this.cuentasModel.deleteOne({ _id: accId }).exec();
     if (result.deletedCount === 0) {
       throw new NotFoundException('Could not find the Accc.');
+    } else {
+      await this.gastosModel.deleteMany({ id_cuenta: accId });
     }
   }
 

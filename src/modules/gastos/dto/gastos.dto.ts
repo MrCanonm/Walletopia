@@ -2,9 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class GastosDTO {
   @ApiProperty()
-  id_cuentas: string;
+  id_cuenta: string;
   @ApiProperty()
-  tipo_gastos: string;
+  tipo_gasto: number;
   @ApiProperty()
   id_categoria: string;
   @ApiProperty()

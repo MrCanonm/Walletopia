@@ -5,16 +5,14 @@ import { Document, Types } from 'mongoose';
 export class Cuenta extends Document {
   @Prop({ required: true })
   acc_name: string;
-
   @Prop({ required: true })
   monto_inicial: number;
-
+  @Prop()
+  monto_corriente: number;
   @Prop({ required: true })
   tipo_de_cuenta: string;
-
   @Prop({ required: true })
   fecha_de_creacion: string;
-
   @Prop({ type: Types.ObjectId, ref: 'User' })
   user_id: string;
 }
