@@ -50,6 +50,7 @@ export class UserService {
     const user = await this.userModel.findOne({ mail: signInDto.mail });
 
     if (!user) {
+      console.log('Usuario no encontrado');
       throw new NotFoundException('Usuario no encontrado');
     }
 
@@ -59,10 +60,12 @@ export class UserService {
     );
 
     if (!isPasswordValid) {
+      console.log('Credenciales inválidas');
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
     const acces_token = await this.generateAccessToken(user);
+    console.log(acces_token);
     return { acces_token };
   }
 

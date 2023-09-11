@@ -109,6 +109,7 @@ export class GastosService {
     if (!gasto) {
       throw new NotFoundException('No se encontró el gasto a eliminar');
     }
+    // Valida si es credito o debito tomando en cuenta que 0 es Debito y 1 es Credito
     const isDebito = gasto.tipo_gasto === 0;
     // Calcular el nuevo monto corriente de la cuenta
     const nuevoMonto = isDebito
