@@ -85,6 +85,8 @@ export class GastosService {
     monto: number,
   ) {
     const updateGastos = await this.gastosModel.findById(gastosId).exec();
+    const vMonto = updateGastos.monto;
+    const cuenta = await this.cuentaModel.findById(updateGastos.id_cuenta);
     if (!updateGastos) {
       throw new NotFoundException('El gasto no existe.');
     }
@@ -99,6 +101,13 @@ export class GastosService {
     }
     if (monto) {
       updateGastos.monto = monto;
+      const diffMonto = vMonto - monto;
+      const isDebito = updateGastos.tipo_gasto === 0;
+      const nuevoMonto = isDebito
+        ? cuenta.monto_corriente + diffMonto
+        : cuenta.monto_corriente - diffMonto;
+      cuenta.monto_corriente = nuevoMonto;
+      await cuenta.save();
     }
     await updateGastos.save();
   }
