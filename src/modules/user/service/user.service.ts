@@ -12,12 +12,16 @@ import { CreateUserDto } from '../dto/userCredential.dto';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { JwtService } from '@nestjs/jwt';
 import { UserCredentailDto } from '../dto/signin.dto';
-
+import { ReqResetPasswordDTO } from '../dto/req.reset.password.dto';
+import { v4 as uuidv4 } from 'uuid';
+import { ResetPasswordDTO } from '../dto/reset.password.dto';
+import { EmailService } from './email.service';
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel('User') readonly userModel: Model<User>,
     readonly jwtService: JwtService,
+    private readonly emailService: EmailService,
   ) {}
   async createUser(data: CreateUserDto): Promise<User> {
     data.mail = data.mail.toLowerCase();
@@ -65,7 +69,7 @@ export class UserService {
     }
 
     const acces_token = await this.generateAccessToken(user);
-    console.log(acces_token);
+    console.log('Haz inciado seccion exitosamente!');
     return { acces_token };
   }
 
@@ -82,5 +86,47 @@ export class UserService {
     }
 
     return user; // Retorna la información del usuario autenticado
+  }
+  async findOneByEmail(mail: string): Promise<User> {
+    const user: User = await this.userModel.findOne({ mail });
+
+    if (!user) {
+      throw new NotFoundException('Email no encontrado');
+    }
+
+    return user; // Retorna la información del usuario autenticado
+  }
+  async findOneByToken(resetPasswordToken: string): Promise<User> {
+    const user: User = await this.userModel.findOne({ resetPasswordToken });
+
+    if (!user) {
+      throw new NotFoundException('Token no encontrado');
+    }
+    return user; // Retorna la información del usuario autenticado
+  }
+  async reqResetPassword(
+    ReqResetPasswordDTO: ReqResetPasswordDTO,
+  ): Promise<void> {
+    const { email } = ReqResetPasswordDTO;
+    const user: User = await this.findOneByEmail(email);
+    const resetPasswordToken = uuidv4();
+    user.resetPasswordToken = resetPasswordToken;
+
+    await user.save();
+    await this.emailService.sendResetPasswordEmail(email, resetPasswordToken);
+    console.log('Solicitud de Cambio de contraseña enviado!');
+  }
+
+  async resetPassword(resertPasswordDTO: ResetPasswordDTO): Promise<void> {
+    const { resetPasswordToken, password } = resertPasswordDTO;
+    const user: User = await this.findOneByToken(resetPasswordToken);
+    // Hashea la nueva contraseña
+    const saltRounds = 10; // Número de rondas para el hash
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    // Actualiza la contraseña y elimina el token de restablecimiento
+    user.password = hashedPassword;
+    user.resetPasswordToken = null;
+    await user.save();
+    console.log('Contraseña cambiada exitosamente!');
   }
 }
