@@ -7,7 +7,6 @@ import { CuentasModule } from './modules/cuentas/cuentas.module';
 import { GastosModule } from './modules/gastos/gastos.module';
 import { CategoriaModule } from './modules/categoria/categoria.module';
 import { UserModule } from './modules/user/user.module';
-import { MailerModule } from '@nestjs-modules/mailer';
 import { EmailModule } from './modules/user/email.module';
 
 @Module({

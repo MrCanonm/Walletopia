@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsUUID, Length } from 'class-validator';
 
 export class ResetPasswordDTO {
   @IsUUID('4')
@@ -8,5 +8,6 @@ export class ResetPasswordDTO {
   resetPasswordToken: string;
   @ApiProperty()
   @IsNotEmpty()
+  @Length(6, 20)
   password: string;
 }
