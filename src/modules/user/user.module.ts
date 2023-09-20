@@ -6,10 +6,12 @@ import { UserService } from './service/user.service';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './service/JwtStrategy';
+import { EmailModule } from './email.module';
 
 @Module({
   imports: [
     PassportModule,
+    EmailModule,
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
     JwtModule.register({
       secret: 'itopia',

@@ -17,6 +17,8 @@ export class User extends Document {
   full_name: string;
   @Prop()
   acces_token: string;
+  @Prop({ unique: true, nullable: true })
+  resetPasswordToken: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
