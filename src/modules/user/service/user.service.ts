@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -16,12 +17,15 @@ import { ReqResetPasswordDTO } from '../dto/req.reset.password.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { ResetPasswordDTO } from '../dto/reset.password.dto';
 import { EmailService } from './email.service';
+import { ChangePasswordDTO } from '../dto/change.password.dto';
+import { EncoderService } from '../comun/passwordUtils';
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel('User') readonly userModel: Model<User>,
     readonly jwtService: JwtService,
     private readonly emailService: EmailService,
+    private readonly encoderService: EncoderService,
   ) {}
   async createUser(data: CreateUserDto): Promise<User> {
     data.mail = data.mail.toLowerCase();
@@ -31,11 +35,9 @@ export class UserService {
       throw new ConflictException('El usuario ya existe');
     }
 
-    let hashedPassword: string | undefined;
-    if (data.password) {
-      const salt = await bcrypt.genSalt();
-      hashedPassword = await bcrypt.hash(data.password, salt);
-    }
+    const hashedPassword = await this.encoderService.hashPassword(
+      data.password,
+    );
 
     const newUser = new this.userModel({
       mail: data.mail,
@@ -77,7 +79,41 @@ export class UserService {
     const payload = { sub: user._id };
     return this.jwtService.signAsync(payload);
   }
+  async reqResetPassword(
+    ReqResetPasswordDTO: ReqResetPasswordDTO,
+  ): Promise<void> {
+    const { email } = ReqResetPasswordDTO;
+    const user: User = await this.findOneByEmail(email);
+    const resetPasswordToken = uuidv4();
+    user.resetPasswordToken = resetPasswordToken;
 
+    await user.save();
+    await this.emailService.sendResetPasswordEmail(email, resetPasswordToken);
+    console.log('Solicitud de Cambio de contraseña enviado!');
+  }
+
+  async resetPassword(resertPasswordDTO: ResetPasswordDTO): Promise<void> {
+    const { resetPasswordToken, password } = resertPasswordDTO;
+    const user: User = await this.findOneByToken(resetPasswordToken);
+    // Actualiza la contraseña y elimina el token de restablecimiento
+    user.password = await this.encoderService.hashPassword(password);
+    user.resetPasswordToken = null;
+    await user.save();
+    console.log('Contraseña cambiada exitosamente!');
+  }
+  async changePassword(
+    changePasswordDTO: ChangePasswordDTO,
+    user: User,
+  ): Promise<void> {
+    const { oldPassword, newPassword } = changePasswordDTO;
+    if (await this.encoderService.checkPassword(oldPassword, user.password)) {
+      user.password = await this.encoderService.hashPassword(newPassword);
+      await user.save();
+    } else {
+      throw new BadRequestException('Contraseña no coinciden!');
+    }
+  }
+  // Validators
   async validateUserById(userId: string): Promise<any> {
     const user = await this.userModel.findById(userId);
 
@@ -103,30 +139,5 @@ export class UserService {
       throw new NotFoundException('Token no encontrado');
     }
     return user; // Retorna la información del usuario autenticado
-  }
-  async reqResetPassword(
-    ReqResetPasswordDTO: ReqResetPasswordDTO,
-  ): Promise<void> {
-    const { email } = ReqResetPasswordDTO;
-    const user: User = await this.findOneByEmail(email);
-    const resetPasswordToken = uuidv4();
-    user.resetPasswordToken = resetPasswordToken;
-
-    await user.save();
-    await this.emailService.sendResetPasswordEmail(email, resetPasswordToken);
-    console.log('Solicitud de Cambio de contraseña enviado!');
-  }
-
-  async resetPassword(resertPasswordDTO: ResetPasswordDTO): Promise<void> {
-    const { resetPasswordToken, password } = resertPasswordDTO;
-    const user: User = await this.findOneByToken(resetPasswordToken);
-    // Hashea la nueva contraseña
-    const saltRounds = 10; // Número de rondas para el hash
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-    // Actualiza la contraseña y elimina el token de restablecimiento
-    user.password = hashedPassword;
-    user.resetPasswordToken = null;
-    await user.save();
-    console.log('Contraseña cambiada exitosamente!');
   }
 }

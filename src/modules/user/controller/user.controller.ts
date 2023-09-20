@@ -1,10 +1,14 @@
-import { Controller, Post, Body, Patch } from '@nestjs/common';
+import { Controller, Post, Body, Patch, UseGuards } from '@nestjs/common';
 import { UserService } from '../service/user.service';
 import { CreateUserDto } from '../dto/userCredential.dto';
 import { User } from '../entity/user.entity';
 import { UserCredentailDto } from '../dto/signin.dto';
 import { ReqResetPasswordDTO } from '../dto/req.reset.password.dto';
 import { ResetPasswordDTO } from '../dto/reset.password.dto';
+import { ChangePasswordDTO } from '../dto/change.password.dto';
+import { GetUser } from '../comun/get.user.decorator';
+import { JwtAuthGuard } from '../guard/jwt-auth.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('users')
 export class UserController {
@@ -28,5 +32,15 @@ export class UserController {
   @Patch('reset-password')
   resetPassword(@Body() resetPassword: ResetPasswordDTO): Promise<void> {
     return this.userService.resetPassword(resetPassword);
+  }
+
+  @Patch('change-password')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  changePassword(
+    @Body() changePasswordDTO: ChangePasswordDTO,
+    @GetUser() user: User,
+  ): Promise<void> {
+    return this.userService.changePassword(changePasswordDTO, user);
   }
 }
