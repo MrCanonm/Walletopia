@@ -49,7 +49,6 @@ export class GastosService {
     const result = await newGastos.save();
     return result.id as string;
   }
-
   async getGastos(req) {
     const userId = req.user._id;
 
@@ -67,7 +66,6 @@ export class GastosService {
 
     return gastos;
   }
-
   async getGastosById(cuentaId: string) {
     const gastos = await this.gastosModel.find({ id_cuenta: cuentaId }).exec();
 
