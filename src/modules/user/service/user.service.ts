@@ -74,6 +74,18 @@ export class UserService {
     console.log('Haz inciado seccion exitosamente!');
     return { acces_token };
   }
+  async updateUserData(id: string, full_name: string) {
+    const userData = await this.userModel.findById(id).exec();
+    if (!userData) {
+      throw new NotFoundException('Usuario no Encontrado');
+    } else {
+      if (full_name) {
+        userData.full_name = full_name;
+      }
+      await userData.save();
+      console.log('Haz cambiado su nombre Exitosamente!');
+    }
+  }
 
   private async generateAccessToken(user: User): Promise<string> {
     const payload = { sub: user._id };

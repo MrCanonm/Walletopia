@@ -1,4 +1,11 @@
-import { Controller, Post, Body, Patch, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Patch,
+  UseGuards,
+  Param,
+} from '@nestjs/common';
 import { UserService } from '../service/user.service';
 import { CreateUserDto } from '../dto/userCredential.dto';
 import { User } from '../entity/user.entity';
@@ -42,5 +49,14 @@ export class UserController {
     @GetUser() user: User,
   ): Promise<void> {
     return this.userService.changePassword(changePasswordDTO, user);
+  }
+  @Patch(':id')
+  async updateUserData(
+    @Param('id') userId: string,
+    @Body() userData: CreateUserDto,
+  ) {
+    const { full_name } = userData;
+    await this.userService.updateUserData(userId, full_name);
+    return null;
   }
 }
