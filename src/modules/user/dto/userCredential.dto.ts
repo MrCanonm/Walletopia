@@ -15,4 +15,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   full_name: string;
+  @ApiProperty()
+  @IsString()
+  user_icon_name: string;
 }

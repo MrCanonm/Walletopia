@@ -55,8 +55,8 @@ export class UserController {
     @Param('id') userId: string,
     @Body() userData: CreateUserDto,
   ) {
-    const { full_name } = userData;
-    await this.userService.updateUserData(userId, full_name);
+    const { full_name, user_icon_name } = userData;
+    await this.userService.updateUserData(userId, full_name, user_icon_name);
     return null;
   }
 }
