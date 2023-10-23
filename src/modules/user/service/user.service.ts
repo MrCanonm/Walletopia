@@ -10,7 +10,6 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from '../dto/userCredential.dto';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { JwtService } from '@nestjs/jwt';
 import { UserCredentailDto } from '../dto/signin.dto';
 import { ReqResetPasswordDTO } from '../dto/req.reset.password.dto';
@@ -43,6 +42,7 @@ export class UserService {
       mail: data.mail,
       password: hashedPassword,
       full_name: data.full_name,
+      user_icon_name: 'user',
     });
 
     const accessToken = await this.generateAccessToken(newUser);
@@ -51,7 +51,9 @@ export class UserService {
     await newUser.save();
     return newUser;
   }
-  async signIn(signInDto: UserCredentailDto): Promise<{ acces_token: string }> {
+  async signIn(
+    signInDto: UserCredentailDto,
+  ): Promise<{ acces_token: string; full_name: string; icon_name: string }> {
     signInDto.mail = signInDto.mail.toLowerCase();
     const user = await this.userModel.findOne({ mail: signInDto.mail });
 
@@ -71,8 +73,26 @@ export class UserService {
     }
 
     const acces_token = await this.generateAccessToken(user);
-    console.log('Haz inciado seccion exitosamente!');
-    return { acces_token };
+    const full_name = user.full_name;
+    const icon_name = user.user_icon_name;
+    console.log('Haz inciado seccion exitosamente');
+    return { acces_token, full_name, icon_name };
+  }
+  async updateUserData(id: string, full_name: string, user_icon_name: string) {
+    const userData = await this.userModel.findById(id).exec();
+    if (!userData) {
+      throw new NotFoundException('Usuario no Encontrado');
+    } else {
+      if (full_name) {
+        userData.full_name = full_name;
+        console.log('Haz cambiado su nombre Exitosamente!');
+      }
+      if (user_icon_name) {
+        userData.user_icon_name = user_icon_name;
+        console.log('Haz cambiado su Icono Exitosamente!');
+      }
+      await userData.save();
+    }
   }
 
   private async generateAccessToken(user: User): Promise<string> {
