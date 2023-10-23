@@ -18,7 +18,6 @@ import { ResetPasswordDTO } from '../dto/reset.password.dto';
 import { EmailService } from './email.service';
 import { ChangePasswordDTO } from '../dto/change.password.dto';
 import { EncoderService } from '../comun/passwordUtils';
-import { use } from 'passport';
 @Injectable()
 export class UserService {
   constructor(
