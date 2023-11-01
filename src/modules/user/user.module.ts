@@ -15,7 +15,7 @@ import { EncoderService } from './comun/passwordUtils';
     EmailModule,
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
     JwtModule.register({
-      secret: 'itopia',
+      secret: process.env.JWT_SKEY,
       signOptions: { expiresIn: '24h' },
     }),
   ],

@@ -1,20 +1,18 @@
 // email.service.ts
-
 import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class EmailService {
   private transporter;
-  googleDatos = require('../guard/google.datos');
   constructor() {
     this.transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
       secure: true,
       auth: {
-        user: this.googleDatos.email.user,
-        pass: this.googleDatos.email.pass,
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
     });
   }
@@ -23,14 +21,15 @@ export class EmailService {
     email: string,
     resetPasswordToken: string,
   ): Promise<void> {
+    const hash = `https://wallet-187fd.web.app/${resetPasswordToken}`;
     const mailOptions = {
       from: '"Olvidaste tu Contraseña 👻" ultraweb07@gmail.com', // Cambia esto al correo electrónico de tu aplicación
       to: email,
       subject: 'Restablecimiento de contraseña',
-      text: `Utiliza este token para restablecer tu contraseña: ${resetPasswordToken}`,
+      text: `Utiliza este token para restablecer tu contraseña: ${hash}`,
       html: `
       <b>Por favor hacer click en el siguiente link: </b>
-      <a  href="${resetPasswordToken}">${resetPasswordToken}</a>
+      <a  href="${hash}">${hash}</a>
       `,
     };
 

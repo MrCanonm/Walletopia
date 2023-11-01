@@ -8,11 +8,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private authService: UserService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: 'itopia',
+      secretOrKey: process.env.JWT_SKEY,
     });
   }
 
   async validate(payload: any) {
-    return this.authService.validateUserById(payload.sub);
+    return await this.authService.validateUserById(payload.sub);
   }
 }

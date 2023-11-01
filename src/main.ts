@@ -6,7 +6,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
   app.use(
     session({
-      secret: 'itopia',
+      secret: process.env.JWT_SKEY,
       resave: false,
       saveUninitialized: false,
     }),

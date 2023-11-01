@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CuentasModule } from './modules/cuentas/cuentas.module';
@@ -19,6 +19,9 @@ import { EmailModule } from './modules/user/email.module';
     MongooseModule.forRoot(
       'mongodb+srv://admin:admin@cluster0.syymq2o.mongodb.net/Itopia?retryWrites=true&w=majority',
     ),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
