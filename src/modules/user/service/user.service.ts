@@ -22,7 +22,7 @@ import { EncoderService } from '../comun/passwordUtils';
 export class UserService {
   constructor(
     @InjectModel('User') readonly userModel: Model<User>,
-    readonly jwtService: JwtService,
+    private readonly jwtService: JwtService,
     private readonly emailService: EmailService,
     private readonly encoderService: EncoderService,
   ) {}
